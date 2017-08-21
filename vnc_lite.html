@@ -125,6 +125,8 @@
             return false;
         }
         function status(text, level) {
+
+            // document.getElementById('noVNC_status_bar').setAttribute("hidden", false);
             switch (level) {
                 case 'normal':
                 case 'warn':
@@ -137,19 +139,21 @@
             document.getElementById('noVNC_status').textContent = text;
         }
         function updateState(rfb, state, oldstate) {
-            var cad = document.getElementById('sendCtrlAltDelButton');
+
             switch (state) {
                 case 'connecting':
                     status("Connecting", "normal");
                     break;
                 case 'connected':
-                    if (rfb && rfb.get_encrypt()) {
-                        status("Connected (encrypted) to " +
-                               desktopName, "normal");
-                    } else {
-                        status("Connected (unencrypted) to " +
-                               desktopName, "normal");
-                    }
+                    status("");
+                    document.getElementById('noVNC_status_bar').setAttribute("hidden", true);
+                    // if (rfb && rfb.get_encrypt()) {
+                    //     status("Connected (encrypted) to " +
+                    //            desktopName, "normal");
+                    // } else {
+                    //     status("Connected (unencrypted) to " +
+                    //            desktopName, "normal");
+                    // }
                     break;
                 case 'disconnecting':
                     status("Disconnecting", "normal");
@@ -162,10 +166,8 @@
                     break;
             }
 
-            if (state === 'connected') {
-                cad.disabled = false;
-            } else {
-                cad.disabled = true;
+            if (state !== 'connected') {
+            
                 xvpInit(0);
             }
 
@@ -198,12 +200,6 @@
                 xvpbuttons.style.display = 'none';
             }
         }
-
-        document.getElementById('sendCtrlAltDelButton').style.display = "inline";
-        document.getElementById('sendCtrlAltDelButton').onclick = sendCtrlAltDel;
-        document.getElementById('xvpShutdownButton').onclick = xvpShutdown;
-        document.getElementById('xvpRebootButton').onclick = xvpReboot;
-        document.getElementById('xvpResetButton').onclick = xvpReset;
 
         WebUtil.init_logging(WebUtil.getConfigVar('logging', 'warn'));
         document.title = WebUtil.getConfigVar('title', 'noVNC');
@@ -274,8 +270,6 @@
                         Loading
                     </div></td>
                     <td width="1%"><div id="noVNC_buttons">
-                        <input type=button value="Send CtrlAltDel"
-                            id="sendCtrlAltDelButton">
                         <span id="noVNC_xvp_buttons">
                         <input type=button value="Shutdown"
                             id="xvpShutdownButton">
